@@ -1,12 +1,18 @@
-import os
-
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    MONGO_URL: str = "mongodb://localhost:27017"
-    DATABASE_NAME: str = "restaurant_db"
-    PORT: int = int(os.getenv("PORT", "8001"))
+
+    MONGO_URL: str
+    DATABASE_NAME: str
+
+    APP_NAME: str = "Restaurant Management System"
+    DEBUG: bool = True
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore"
+    )
 
 
 settings = Settings()

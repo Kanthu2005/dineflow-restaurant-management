@@ -15,20 +15,19 @@ async def lifespan(app: FastAPI):
     try:
         client.admin.command("ping")
 
-        print("========================================")
+        
         print("MongoDB connection successful")
         print(f"Database: {settings.DATABASE_NAME}")
-        print("========================================")
-
+       
         create_indexes(db)
 
         print("MongoDB indexes created successfully")
 
     except Exception as e:
-        print("========================================")
+        
         print("MongoDB connection failed")
         print(f"Error: {e}")
-        print("========================================")
+        
 
     yield
 

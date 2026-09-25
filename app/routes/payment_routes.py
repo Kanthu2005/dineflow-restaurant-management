@@ -40,6 +40,17 @@ def get_order_invoice(
         handle_error(e)
 
 
+@router.get("/invoices")
+def get_invoices(
+    status: str = None,
+    current_user: dict = Depends(require_roles("ADMIN", "MANAGER", "CASHIER")),
+):
+    try:
+        return BillingService.get_invoices(status)
+    except Exception as e:
+        handle_error(e)
+
+
 @router.get("/invoices/{invoice_id}")
 def get_invoice(
     invoice_id: str,
@@ -65,6 +76,16 @@ def create_payment(
 ):
     try:
         return PaymentService.create_payment(data)
+    except Exception as e:
+        handle_error(e)
+
+
+@router.get("/payments")
+def get_payments(
+    current_user: dict = Depends(require_roles("ADMIN", "MANAGER", "CASHIER")),
+):
+    try:
+        return PaymentService.get_payments()
     except Exception as e:
         handle_error(e)
 

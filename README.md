@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-"# dineflow-restaurant-management" 
-=======
 # DineFlow - Restaurant Management System
 
 A production-ready Restaurant Order & Kitchen Operations backend API built with **FastAPI**, **MongoDB** (PyMongo), and **JWT Authentication with Role-Based Access Control (RBAC)**.
@@ -96,4 +93,3 @@ uvicorn app.main:app --reload --port 8000
 ```bash
 pytest tests/test_api.py -v
 ```
->>>>>>> 6f39839 (your commit message)

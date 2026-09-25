@@ -1,21 +1,9 @@
-<<<<<<< HEAD
-from fastapi import FastAPI
-from sqlalchemy import text
-app = FastAPI(title="Resta API")
-
-@app.get("/")
-def home():
-    return {"message": "Resta API is running"}
-
-@app.get("/db-test")
-def database_test():
-    with engine.connect() as connection:
-        result = connection.execute(text("SELECT 1"))
-        return {"database": result.scalar()}
-=======
+import os
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse, JSONResponse
 
 from app.config.settings import settings
 from app.database.mongodb import client, db
@@ -55,6 +43,7 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"Error closing MongoDB connection: {e}")
 
+
 app = FastAPI(
     title=settings.APP_NAME,
     description="Restaurant Order & Kitchen Operations System",
@@ -62,13 +51,30 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Enable CORS for frontend UI connecting from any origin/port
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(
     router,
     prefix="/api",
 )
 
+# Mount frontend directory for seamless standalone or integrated UI access
+FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
+if os.path.exists(FRONTEND_DIR):
+    app.mount("/app", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend_app")
+
+
 @app.get("/")
 def home():
+    if os.path.exists(FRONTEND_DIR):
+        return RedirectResponse(url="/app/")
 
     return {
         "message": "Restaurant Management System API is running",
@@ -97,4 +103,3 @@ def health_check():
             "database": "MongoDB",
             "error": str(e),
         }
->>>>>>> 6f39839 (your commit message)

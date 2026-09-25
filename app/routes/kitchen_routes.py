@@ -26,6 +26,17 @@ def create_kitchen_ticket(
         handle_error(e)
 
 
+@router.get("/kitchen/tickets")
+def get_kitchen_tickets(
+    status: str = None,
+    current_user: dict = Depends(require_roles("ADMIN", "MANAGER", "CHEF", "WAITER")),
+):
+    try:
+        return KitchenService.get_tickets(status)
+    except Exception as e:
+        handle_error(e)
+
+
 @router.get("/kitchen/tickets/{ticket_id}")
 def get_kitchen_ticket(
     ticket_id: str,

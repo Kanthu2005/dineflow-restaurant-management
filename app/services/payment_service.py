@@ -140,5 +140,10 @@ class PaymentService:
     def get_by_invoice(invoice_id):
         return PaymentService.get_invoice_payments(invoice_id)
 
+    @staticmethod
+    def get_payments():
+        payments = list(payments_collection.find().sort("paid_at", -1))
+        return serialize_documents(payments)
+
 
 #refundservice...

@@ -78,6 +78,27 @@ class KitchenService:
         return serialize_document(ticket)
 
     @staticmethod
+    def get_tickets(status=None):
+        query = {}
+        if status:
+            query["status"] = status
+
+        tickets = list(kitchen_tickets_collection.find(query).sort("_id", -1))
+        enriched = []
+        for t in tickets:
+            item = serialize_document(t)
+            if "order_id" in t and t["order_id"]:
+                order = orders_collection.find_one({"_id": t["order_id"]})
+                if order:
+                    item["order_number"] = order.get("order_number")
+                    item["order_type"] = order.get("order_type")
+                    item["table_id"] = str(order.get("table_id")) if order.get("table_id") else None
+                    items = list(order_items_collection.find({"order_id": order["_id"]}))
+                    item["order_items"] = serialize_documents(items)
+            enriched.append(item)
+        return enriched
+
+    @staticmethod
     def update_ticket_status(ticket_id, status):
 
         ticket = kitchen_tickets_collection.find_one(

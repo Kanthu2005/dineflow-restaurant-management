@@ -1,11 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-<<<<<<< HEAD
-class Settings(BaseSettings):
-    DATABASE_URL: str
-    MONGODB_URL: str = "mongodb://localhost:27017"
-    MONGODB_DB: str = "restaurant_db"
-=======
 
 class Settings(BaseSettings):
 
@@ -19,7 +13,6 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = "supersecretjwtkeyforrestaurantmanagementsystem2026"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
->>>>>>> 6f39839 (your commit message)
 
     model_config = SettingsConfigDict(
         env_file=".env",

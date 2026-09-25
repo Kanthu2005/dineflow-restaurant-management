@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DineFlow - Restaurant Management System</title>
+  
+  <!-- Modern Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Global Loader Overlay -->
+  <div id="global-loader" style="position: fixed; inset: 0; background: rgba(10,13,20,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div style="text-align: center;">
+      <div style="width: 48px; height: 48px; border: 3px solid rgba(245,158,11,0.2); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem;"></div>
+      <p style="font-size: 0.9rem; font-weight: 600; color: var(--text-main);">Processing request...</p>
+    </div>
+  </div>
+  <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+
+  <!-- Toast Notifications Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="app-container">
+
+    <!-- ================= SIDEBAR NAVIGATION ================= -->
+    <aside class="sidebar">
+      <div class="brand-section">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </div>
+        <div>
+          <div class="brand-title">DineFlow</div>
+          <div class="brand-subtitle">Culinary Suite v1.0</div>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <span class="nav-label">Core Operations</span>
+        <a class="nav-item active" data-view="dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          Dashboard
+        </a>
+        <a class="nav-item" data-view="pos">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+          Point of Sale (POS)
+        </a>
+        <a class="nav-item" data-view="orders">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14h6"/><path d="M9 18h6"/><path d="M9 10h6"/></svg>
+          Orders Pipeline
+        </a>
+        <a class="nav-item" data-view="kitchen">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
+          Kitchen KDS
+        </a>
+
+        <span class="nav-label">Dining & Floor</span>
+        <a class="nav-item" data-view="tables">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5v14"/><path d="M21 5v14"/><path d="M3 10h18"/><path d="M8 10v9"/><path d="M16 10v9"/></svg>
+          Tables & Booking
+        </a>
+        <a class="nav-item" data-view="billing">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+          Billing & Payments
+        </a>
+
+        <span class="nav-label">Management</span>
+        <a class="nav-item" data-view="inventory">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+          Stock & Inventory
+        </a>
+        <a class="nav-item" data-view="menu-mgmt">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+          Menu Administration
+        </a>
+        <a class="nav-item" data-view="feedback">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Reviews & Feedback
+        </a>
+        <a class="nav-item" data-view="users" data-roles="ADMIN,MANAGER">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Staff & Roles
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-quick-profile">
+          <div class="user-avatar" id="user-avatar-text">AD</div>
+          <div class="user-meta">
+            <div class="user-meta-name" id="user-display-name">System Admin</div>
+            <span class="user-meta-role" id="user-display-role">ADMIN</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN WRAPPER ================= -->
+    <div class="main-wrapper">
+
+      <!-- TOP HEADER BAR -->
+      <header class="top-header">
+        <div class="header-left">
+          <div class="page-title-box">
+            <h1 id="current-page-title">Executive Dashboard</h1>
+            <p id="current-page-desc">Live restaurant metrics and operational overview</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Backend Connection Pill -->
+          <div class="backend-status-pill" onclick="App.openConfigModal()" title="Click to view/change Backend API URL">
+            <div id="backend-status-dot" class="status-dot"></div>
+            <span id="backend-status-text">Checking connection...</span>
+          </div>
+
+          <!-- 1-Click Role Switcher -->
+          <div class="role-switcher-dropdown">
+            <button class="role-pill-btn" onclick="App.toggleRoleDropdown()">
+              <span>Switch Role:</span>
+              <strong id="header-role-pill-text" style="color: var(--accent-primary);">ADMIN</strong>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="role-dropdown-menu" id="role-dropdown-menu">
+              <button class="role-option-btn" onclick="App.quickRoleLogin('ADMIN')">
+                <span>System Admin</span>
+                <span class="badge badge-purple">Admin</span>
+              </button>
+              <button class="role-option-btn" onclick="App.quickRoleLogin('MANAGER')">
+                <span>General Manager</span>
+                <span class="badge badge-blue">Manager</span>
+              </button>
+              <button class="role-option-btn" onclick="App.quickRoleLogin('CHEF')">
+                <span>Head Chef</span>
+                <span class="badge badge-amber">Chef</span>
+              </button>
+              <button class="role-option-btn" onclick="App.quickRoleLogin('WAITER')">
+                <span>Floor Waiter</span>
+                <span class="badge badge-green">Waiter</span>
+              </button>
+              <button class="role-option-btn" onclick="App.quickRoleLogin('CASHIER')">
+                <span>Billing Cashier</span>
+                <span class="badge badge-muted">Cashier</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Action Button -->
+          <button class="btn btn-primary btn-sm" onclick="App.switchView('pos')">
+            <span>+ New Order (POS)</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENT BODY (VIEWS) -->
+      <main class="content-body">
+
+        <!-- ================= 1. DASHBOARD VIEW ================= -->
+        <section id="view-dashboard" class="view-section active">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-icon amber">🛍️</div>
+              <div class="stat-info">
+                <div class="stat-label">Active Orders</div>
+                <div class="stat-value" id="dash-active-orders">0</div>
+                <div class="stat-subtext">Currently open in pipeline</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon blue">🪑</div>
+              <div class="stat-info">
+                <div class="stat-label">Table Occupancy</div>
+                <div class="stat-value" id="dash-tables-occupied">0 / 0</div>
+                <div class="stat-subtext">Occupied vs available</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon green">💵</div>
+              <div class="stat-info">
+                <div class="stat-label">Paid Revenue</div>
+                <div class="stat-value" id="dash-revenue-today">$0.00</div>
+                <div class="stat-subtext">Settled customer invoices</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon purple">👨‍🍳</div>
+              <div class="stat-info">
+                <div class="stat-label">Kitchen Queue</div>
+                <div class="stat-value" id="dash-kitchen-tickets">0</div>
+                <div class="stat-subtext">Orders awaiting preparation</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon red">⚠️</div>
+              <div class="stat-info">
+                <div class="stat-label">Low Stock Items</div>
+                <div class="stat-value" id="dash-low-stock">0</div>
+                <div class="stat-subtext">Ingredients needing restock</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+            <!-- Recent Orders Card -->
+            <div class="glass-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700;">Recent Order Activity</h3>
+                <button class="btn btn-secondary btn-sm" onclick="App.switchView('orders')">View All Orders →</button>
+              </div>
+              <div class="data-table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Order #</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dash-recent-orders-body">
+                    <tr><td colspan="5" style="text-align: center; color: var(--text-dim); padding: 1.5rem;">Loading orders...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Operational Shortcuts -->
+            <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">Fast Operations</h3>
+                <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 1.25rem;">One-click shortcuts to frequent workflows</p>
+                <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+                  <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="App.switchView('pos')">
+                    <span>🛒</span> Launch Point of Sale
+                  </button>
+                  <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="App.switchView('kitchen')">
+                    <span>🔥</span> View Kitchen KDS Board
+                  </button>
+                  <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="TablesView.openNewReservationModal()">
+                    <span>📅</span> Book Table Reservation
+                  </button>
+                  <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="InventoryView.openAddModal()">
+                    <span>📦</span> Add Inventory Ingredient
+                  </button>
+                </div>
+              </div>
+
+              <div style="background: rgba(0,0,0,0.3); border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem;">
+                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent-primary); font-weight: 700;">Backend Integration</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">FastAPI + MongoDB connected. Real-time REST endpoints active.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 2. POINT OF SALE (POS) ================= -->
+        <section id="view-pos" class="view-section">
+          <div class="pos-layout">
+            <!-- Left Column: Menu Items & Filters -->
+            <div class="pos-menu-column">
+              <div class="pos-filter-bar">
+                <div class="search-box">
+                  <span class="search-icon">🔍</span>
+                  <input type="text" class="form-input" placeholder="Search dishes, drinks, appetizers..." oninput="POS.search(this.value)">
+                </div>
+              </div>
+
+              <!-- Categories Tabs -->
+              <div class="category-tabs" id="pos-category-tabs">
+                <button class="category-tab-btn active">All Items</button>
+              </div>
+
+              <!-- Dishes Grid -->
+              <div class="pos-items-grid" id="pos-items-grid">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-dim);">Loading menu dishes...</div>
+              </div>
+            </div>
+
+            <!-- Right Column: Cart Panel -->
+            <div class="pos-cart-panel">
+              <div class="cart-header">
+                <div class="cart-title">
+                  <span>Current Ticket</span>
+                  <span class="badge badge-amber" id="pos-cart-count">0</span>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="POS.clearCart()">Clear</button>
+              </div>
+
+              <!-- Order Configurations (Table & Customer) -->
+              <div class="cart-controls">
+                <div>
+                  <label class="form-label" style="font-size: 0.7rem;">Table</label>
+                  <select class="form-select" id="pos-table-select" style="padding: 0.4rem 0.6rem; font-size: 0.8rem;">
+                    <option value="">-- Table --</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label" style="font-size: 0.7rem;">Order Type</label>
+                  <select class="form-select" id="pos-type-select" style="padding: 0.4rem 0.6rem; font-size: 0.8rem;">
+                    <option value="DINE_IN">Dine In</option>
+                    <option value="TAKEAWAY">Takeaway</option>
+                    <option value="DELIVERY">Delivery</option>
+                  </select>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                  <label class="form-label" style="font-size: 0.7rem;">Customer</label>
+                  <select class="form-select" id="pos-customer-select" style="padding: 0.4rem 0.6rem; font-size: 0.8rem;">
+                    <option value="">Walk-in Guest</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Cart Items List -->
+              <div class="cart-items-list" id="pos-cart-items">
+                <div class="cart-empty">
+                  <div style="font-size: 2.5rem; opacity: 0.4;">🛒</div>
+                  <p>Your ticket is currently empty.</p>
+                </div>
+              </div>
+
+              <!-- Cart Footer & Placement Actions -->
+              <div class="cart-footer">
+                <div class="cart-summary-line">
+                  <span>Subtotal</span>
+                  <span id="pos-cart-subtotal">$0.00</span>
+                </div>
+                <div class="cart-summary-line">
+                  <span>Tax (5% GST)</span>
+                  <span id="pos-cart-tax">$0.00</span>
+                </div>
+                <div class="cart-summary-line grand-total">
+                  <span>Grand Total</span>
+                  <span id="pos-cart-total">$0.00</span>
+                </div>
+
+                <div class="cart-action-buttons">
+                  <button class="btn btn-secondary" onclick="POS.placeOrder(false)">
+                    Place Order
+                  </button>
+                  <button class="btn btn-primary" onclick="POS.placeOrder(true)">
+                    Send to Kitchen ➔
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 3. ORDERS PIPELINE ================= -->
+        <section id="view-orders" class="view-section">
+          <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 700;">Customer Orders</h3>
+                <span class="badge badge-amber" id="orders-total-count">0 Orders</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary btn-sm" onclick="OrdersList.setFilter('all')">All</button>
+                <button class="btn btn-secondary btn-sm" onclick="OrdersList.setFilter('CONFIRMED')">Confirmed</button>
+                <button class="btn btn-secondary btn-sm" onclick="OrdersList.setFilter('SENT_TO_KITCHEN')">In Kitchen</button>
+                <button class="btn btn-secondary btn-sm" onclick="OrdersList.setFilter('READY')">Ready</button>
+                <button class="btn btn-secondary btn-sm" onclick="OrdersList.setFilter('COMPLETED')">Completed</button>
+                <button class="btn btn-primary btn-sm" onclick="OrdersList.refresh()">↻ Refresh</button>
+              </div>
+            </div>
+
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Order #</th>
+                    <th>Type</th>
+                    <th>Table</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table-body">
+                  <tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading orders...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 4. KITCHEN DISPLAY (KDS) ================= -->
+        <section id="view-kitchen" class="view-section">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div>
+              <p style="font-size: 0.82rem; color: var(--text-dim);">Live kitchen tickets advance automatically as chefs prepare and plate each dish.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="KitchenDisplay.openCreateTicketModal()">+ Dispatch Ticket</button>
+              <button class="btn btn-primary btn-sm" onclick="KitchenDisplay.refresh()">↻ Live Refresh</button>
+            </div>
+          </div>
+
+          <div class="kds-board">
+            <!-- Col 1: Queued -->
+            <div class="kds-column">
+              <div class="kds-col-header">
+                <div class="kds-col-title">
+                  <span>Queued</span>
+                  <span class="badge badge-amber" id="kds-count-queued">0</span>
+                </div>
+              </div>
+              <div class="kds-tickets-container" id="kds-col-queued"></div>
+            </div>
+
+            <!-- Col 2: Preparing -->
+            <div class="kds-column">
+              <div class="kds-col-header">
+                <div class="kds-col-title">
+                  <span>Preparing</span>
+                  <span class="badge badge-purple" id="kds-count-preparing">0</span>
+                </div>
+              </div>
+              <div class="kds-tickets-container" id="kds-col-preparing"></div>
+            </div>
+
+            <!-- Col 3: Ready -->
+            <div class="kds-column">
+              <div class="kds-col-header">
+                <div class="kds-col-title">
+                  <span>Ready to Serve</span>
+                  <span class="badge badge-green" id="kds-count-ready">0</span>
+                </div>
+              </div>
+              <div class="kds-tickets-container" id="kds-col-ready"></div>
+            </div>
+
+            <!-- Col 4: Handed Over -->
+            <div class="kds-column">
+              <div class="kds-col-header">
+                <div class="kds-col-title">
+                  <span>Handed Over</span>
+                  <span class="badge badge-muted" id="kds-count-completed">0</span>
+                </div>
+              </div>
+              <div class="kds-tickets-container" id="kds-col-completed"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 5. TABLES & RESERVATIONS ================= -->
+        <section id="view-tables" class="view-section">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm tables-subtab-btn active" data-tab="floor" onclick="TablesView.setSubTab('floor')">Floor Plan</button>
+              <button class="btn btn-secondary btn-sm tables-subtab-btn" data-tab="reservations" onclick="TablesView.setSubTab('reservations')">Reservations</button>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="TablesView.openNewReservationModal()">+ New Booking</button>
+              <button class="btn btn-primary btn-sm" onclick="TablesView.openAddTableModal()">+ Add Table</button>
+            </div>
+          </div>
+
+          <!-- Floor Plan Grid -->
+          <div id="tables-floor-view">
+            <div class="floor-plan-grid" id="tables-grid-container">
+              <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">Loading floor plan...</div>
+            </div>
+          </div>
+
+          <!-- Reservations Table -->
+          <div id="tables-reservations-view" style="display: none;">
+            <div class="glass-card">
+              <div class="data-table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Time Slot</th>
+                      <th>Table</th>
+                      <th>Guests</th>
+                      <th>Phone</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reservations-table-body">
+                    <tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading reservations...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 6. BILLING & PAYMENTS ================= -->
+        <section id="view-billing" class="view-section">
+          <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 700;">Invoices & Settlement</h3>
+                <span class="badge badge-green" id="invoices-total-count">0 Invoices</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary btn-sm" onclick="BillingView.setFilter('all')">All</button>
+                <button class="btn btn-secondary btn-sm" onclick="BillingView.setFilter('UNPAID')">Unpaid</button>
+                <button class="btn btn-secondary btn-sm" onclick="BillingView.setFilter('PAID')">Paid</button>
+                <button class="btn btn-primary btn-sm" onclick="BillingView.refresh()">↻ Refresh</button>
+              </div>
+            </div>
+
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Invoice #</th>
+                    <th>Order #</th>
+                    <th>Subtotal</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="invoices-table-body">
+                  <tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading invoices...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 7. INVENTORY ================= -->
+        <section id="view-inventory" class="view-section">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <h3 style="font-size: 1.15rem; font-weight: 700;">Stock & Ingredients</h3>
+              <span class="badge badge-purple" id="inventory-total-count">0 Items</span>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="InventoryView.openAddModal()">+ Add Ingredient</button>
+          </div>
+
+          <div class="glass-card" style="margin-bottom: 1.5rem;">
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ingredient</th>
+                    <th>Stock Level</th>
+                    <th>Min Threshold</th>
+                    <th>Cost</th>
+                    <th>Supplier</th>
+                    <th>Status</th>
+                    <th>Restock</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-table-body">
+                  <tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading inventory...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Stock Movements Log -->
+          <div class="glass-card">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Recent Stock Operations</h4>
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Item ID</th>
+                    <th>Type</th>
+                    <th>Quantity Change</th>
+                    <th>Reason</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="movements-table-body">
+                  <tr><td colspan="5" style="text-align: center; padding: 1.5rem;">Loading logs...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 8. MENU ADMINISTRATION ================= -->
+        <section id="view-menu-mgmt" class="view-section">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <h3 style="font-size: 1.15rem; font-weight: 700;">Dishes & Categories</h3>
+              <span class="badge badge-amber" id="menu-items-count-badge">0 Dishes</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="MenuMgmt.openAddCategoryModal()">+ Add Category</button>
+              <button class="btn btn-primary btn-sm" onclick="MenuMgmt.openAddItemModal()">+ Add Dish</button>
+            </div>
+          </div>
+
+          <div class="glass-card" style="margin-bottom: 1.5rem;">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Dishes Directory</h4>
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Dish Name</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Prep Time</th>
+                    <th>Status</th>
+                    <th>Toggle</th>
+                  </tr>
+                </thead>
+                <tbody id="menu-items-table-body">
+                  <tr><td colspan="6" style="text-align: center; padding: 2rem;">Loading dishes...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Menu Categories</h4>
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Category Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody id="menu-cat-table-body">
+                  <tr><td colspan="2" style="text-align: center; padding: 1.5rem;">Loading categories...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= 9. REVIEWS & FEEDBACK ================= -->
+        <section id="view-feedback" class="view-section">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div>
+              <p style="font-size: 0.85rem; color: var(--text-dim);">Live customer satisfaction tracking and feedback analytics.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="FeedbackView.openSubmitModal()">+ Submit Feedback</button>
+          </div>
+
+          <div class="stat-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+            <div class="stat-card">
+              <div class="stat-icon amber">⭐</div>
+              <div class="stat-info">
+                <div class="stat-label">Average Score</div>
+                <div class="stat-value" id="feedback-avg-rating">5.0</div>
+                <div class="stat-subtext" id="feedback-total-count">0 reviews</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon green">🍲</div>
+              <div class="stat-info">
+                <div class="stat-label">Food Quality</div>
+                <div class="stat-value" id="feedback-food-rating">5.0/5</div>
+                <div class="stat-subtext">Dish ratings</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon blue">🛎️</div>
+              <div class="stat-info">
+                <div class="stat-label">Service Rating</div>
+                <div class="stat-value" id="feedback-service-rating">5.0/5</div>
+                <div class="stat-subtext">Waitstaff score</div>
+              </div>
+            </div>
+          </div>
+
+          <h4 style="font-size: 1.05rem; font-weight: 700; margin: 1.5rem 0 0.85rem;">Recent Guest Reviews</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;" id="feedback-cards-grid">
+            <div style="text-align: center; color: var(--text-dim); padding: 2rem;">Loading reviews...</div>
+          </div>
+        </section>
+
+        <!-- ================= 10. USERS & STAFF ================= -->
+        <section id="view-users" class="view-section">
+          <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 700;">Restaurant Personnel</h3>
+                <span class="badge badge-purple" id="users-total-count">0 Staff</span>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="UsersView.openAddModal()">+ Add Staff Account</button>
+            </div>
+
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email Address</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body">
+                  <tr><td colspan="5" style="text-align: center; padding: 2rem;">Loading staff accounts...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- 1. Backend Config Modal -->
+  <div class="modal-overlay" id="api-config-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Backend API Configuration</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('api-config-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">API Base URL</label>
+          <input type="text" class="form-input" id="api-base-url-input" placeholder="http://localhost:8000/api">
+          <span style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.35rem; display: block;">
+            The endpoint where your FastAPI server is currently running.
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('api-config-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="App.saveApiConfig()">Save & Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Order Details Modal -->
+  <div class="modal-overlay" id="order-details-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Order Overview</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('order-details-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="order-details-modal-content">
+        Loading order details...
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Apply Discount Modal -->
+  <div class="modal-overlay" id="discount-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Apply Order Discount</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('discount-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="discount-order-id">
+        <div class="form-group">
+          <label class="form-label">Discount Amount ($)</label>
+          <input type="number" step="0.5" class="form-input" id="discount-amount-input" placeholder="e.g. 5.00">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('discount-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="OrdersList.applyDiscount()">Apply Discount</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Create Kitchen Ticket Modal -->
+  <div class="modal-overlay" id="create-ticket-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Dispatch Kitchen Ticket</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('create-ticket-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Select Confirmed Order</label>
+          <select class="form-select" id="ticket-order-select"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ticket Priority</label>
+          <select class="form-select" id="ticket-priority-select">
+            <option value="NORMAL">Normal</option>
+            <option value="HIGH">High</option>
+            <option value="URGENT">Urgent (VIP/Rush)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('create-ticket-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="KitchenDisplay.submitNewTicket()">Dispatch to KDS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Add Table Modal -->
+  <div class="modal-overlay" id="add-table-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Register Table</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('add-table-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Table Number (e.g. 1, 2, B1, VIP)</label>
+          <input type="text" class="form-input" id="table-num-input" placeholder="10">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Capacity (Guests)</label>
+          <input type="number" class="form-input" id="table-capacity-input" value="4">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location / Section</label>
+          <input type="text" class="form-input" id="table-location-input" placeholder="Indoor Main Dining">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('add-table-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="TablesView.submitAddTable()">Save Table</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Table Status Modal -->
+  <div class="modal-overlay" id="table-status-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Table Status Control</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('table-status-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="table-status-modal-content">
+        Loading table...
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. New Reservation Modal -->
+  <div class="modal-overlay" id="new-reservation-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Book Table Reservation</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('new-reservation-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Guest Profile</label>
+          <select class="form-select" id="res-customer-select"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assigned Table</label>
+          <select class="form-select" id="res-table-select"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input" id="res-date-input" value="2026-09-25">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label">Start Time</label>
+            <input type="time" class="form-input" id="res-start-time" value="19:00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Time</label>
+            <input type="time" class="form-input" id="res-end-time" value="21:00">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Guest Count</label>
+          <input type="number" class="form-input" id="res-guests-input" value="2">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contact Phone</label>
+          <input type="text" class="form-input" id="res-phone-input" placeholder="1234567890">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('new-reservation-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="TablesView.submitReservation()">Confirm Reservation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Payment Modal -->
+  <div class="modal-overlay" id="payment-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Record Payment</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('payment-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="pay-invoice-id">
+        <div class="form-group">
+          <label class="form-label">Payment Amount ($)</label>
+          <input type="number" step="0.01" class="form-input" id="pay-amount-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select class="form-select" id="pay-method-select">
+            <option value="CASH">Cash</option>
+            <option value="CREDIT_CARD">Credit Card</option>
+            <option value="DEBIT_CARD">Debit Card</option>
+            <option value="UPI">UPI / QR Code</option>
+            <option value="DIGITAL_WALLET">Digital Wallet (Apple/Google Pay)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Transaction Reference (Optional)</label>
+          <input type="text" class="form-input" id="pay-ref-input" placeholder="e.g. TXN-998822">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('payment-modal')">Cancel</button>
+        <button class="btn btn-success" onclick="BillingView.submitPayment()">Settle Payment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. Receipt Modal -->
+  <div class="modal-overlay" id="receipt-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Customer Receipt</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('receipt-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="receipt-modal-content">
+        Loading receipt...
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('receipt-modal')">Close</button>
+        <button class="btn btn-primary" onclick="BillingView.printReceipt()">🖨️ Print Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10. Add Ingredient Modal -->
+  <div class="modal-overlay" id="add-ingredient-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">New Ingredient</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('add-ingredient-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Ingredient Name</label>
+          <input type="text" class="form-input" id="ing-name-input" placeholder="e.g. Mozzarella Cheese">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Unit of Measure (kg, L, pcs, etc.)</label>
+          <input type="text" class="form-input" id="ing-unit-input" placeholder="kg">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label">Initial Quantity</label>
+            <input type="number" class="form-input" id="ing-qty-input" value="10">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Min Threshold Level</label>
+            <input type="number" class="form-input" id="ing-min-input" value="5">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cost per Unit ($)</label>
+          <input type="number" step="0.5" class="form-input" id="ing-cost-input" value="4.50">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Supplier Name</label>
+          <input type="text" class="form-input" id="ing-supplier-input" placeholder="Dairy Best Corp">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('add-ingredient-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="InventoryView.submitAddIngredient()">Save Ingredient</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. Restock Modal -->
+  <div class="modal-overlay" id="restock-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Restock Ingredient</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('restock-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="restock-ing-id">
+        <p style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+          Restocking: <strong id="restock-ing-name" style="color: var(--accent-primary);"></strong>
+        </p>
+        <div class="form-group">
+          <label class="form-label">Quantity to Add (<span id="restock-ing-unit"></span>)</label>
+          <input type="number" class="form-input" id="restock-qty-input" placeholder="e.g. 10">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('restock-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="InventoryView.submitRestock()">Confirm Restock</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. Add Dish Modal -->
+  <div class="modal-overlay" id="add-dish-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Dish to Menu</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('add-dish-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Dish Name</label>
+          <input type="text" class="form-input" id="dish-name-input" placeholder="Truffle Mushroom Risotto">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="dish-category-select"></select>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label">Price ($)</label>
+            <input type="number" step="0.5" class="form-input" id="dish-price-input" value="18.50">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Prep Time (mins)</label>
+            <input type="number" class="form-input" id="dish-prep-input" value="15">
+          </div>
+        </div>
+        <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+          <input type="checkbox" id="dish-veg-input" style="width: 18px; height: 18px;">
+          <label for="dish-veg-input" style="font-size: 0.85rem; font-weight: 600;">Vegetarian Dish</label>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="dish-desc-input" placeholder="Rich creamy arborio rice with black truffle oil and wild mushrooms."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('add-dish-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="MenuMgmt.submitAddItem()">Add Dish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 13. Add Category Modal -->
+  <div class="modal-overlay" id="add-category-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">New Menu Category</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('add-category-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Category Name</label>
+          <input type="text" class="form-input" id="cat-name-input" placeholder="Chef's Specials">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description (Optional)</label>
+          <input type="text" class="form-input" id="cat-desc-input" placeholder="Seasonal gourmet creations">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('add-category-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="MenuMgmt.submitAddCategory()">Create Category</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 14. Submit Feedback Modal -->
+  <div class="modal-overlay" id="submit-feedback-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Submit Dining Review</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('submit-feedback-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Order</label>
+          <select class="form-select" id="fb-order-select"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Customer</label>
+          <select class="form-select" id="fb-customer-select"></select>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+          <div class="form-group">
+            <label class="form-label">Overall (1-5)</label>
+            <input type="number" min="1" max="5" class="form-input" id="fb-rating-overall" value="5">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Food (1-5)</label>
+            <input type="number" min="1" max="5" class="form-input" id="fb-rating-food" value="5">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Service (1-5)</label>
+            <input type="number" min="1" max="5" class="form-input" id="fb-rating-service" value="5">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Comments</label>
+          <textarea class="form-textarea" id="fb-comments-input" placeholder="The service was exceptional and the steak was cooked to perfection!"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('submit-feedback-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="FeedbackView.submitFeedback()">Submit Review</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 15. Add User Modal -->
+  <div class="modal-overlay" id="add-user-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Create Staff User</h3>
+        <button class="modal-close-btn" onclick="App.closeModal('add-user-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="new-user-name" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="new-user-email" placeholder="staff@dineflow.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="new-user-password" value="Password123!">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <select class="form-select" id="new-user-role">
+            <option value="WAITER">Floor Waiter</option>
+            <option value="CHEF">Head Chef / Cook</option>
+            <option value="CASHIER">Billing Cashier</option>
+            <option value="MANAGER">Restaurant Manager</option>
+            <option value="ADMIN">System Administrator</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('add-user-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="UsersView.submitAddUser()">Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/pos.js"></script>
+  <script src="js/orders.js"></script>
+  <script src="js/kitchen.js"></script>
+  <script src="js/tables.js"></script>
+  <script src="js/billing.js"></script>
+  <script src="js/inventory.js"></script>
+  <script src="js/menu-mgmt.js"></script>
+  <script src="js/feedback.js"></script>
+  <script src="js/users.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

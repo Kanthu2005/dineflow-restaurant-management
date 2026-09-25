@@ -85,6 +85,23 @@ class BillingService:
     def get_by_order(order_id):
         return BillingService.get_invoice_by_order(order_id)
 
+    @staticmethod
+    def get_invoices(status=None):
+        query = {}
+        if status:
+            query["status"] = status
+        invoices = list(invoices_collection.find(query).sort("_id", -1))
+        enriched = []
+        for inv in invoices:
+            item = serialize_document(inv)
+            if "order_id" in inv and inv["order_id"]:
+                order = orders_collection.find_one({"_id": inv["order_id"]})
+                if order:
+                    item["order_number"] = order.get("order_number")
+                    item["order_type"] = order.get("order_type")
+            enriched.append(item)
+        return enriched
+
 
 
 #paymentservice...

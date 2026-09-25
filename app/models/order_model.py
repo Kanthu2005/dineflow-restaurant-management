@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from datetime import datetime
 from decimal import Decimal
 
@@ -19,10 +20,39 @@ class OrderModel(BaseModel):
     customer_id: str | None = None
     table_id: str | None = None
     order_type: str
+=======
+from pydantic import BaseModel
+from typing import Optional
+from decimal import Decimal
+from datetime import datetime
+
+class OrderBase(BaseModel):
+    customer_id: Optional[str] = None
+    table_id: Optional[str] = None
+    order_type: str
+    created_by: str
+
+class OrderCreate(OrderBase):
+    pass
+
+class OrderStatusUpdate(BaseModel):
+    status: str
+
+class OrderDiscountUpdate(BaseModel):
+    discount: Decimal
+
+class Order(OrderBase):
+    id: str
+    order_number: str
+>>>>>>> main
     status: str
     subtotal: Decimal
     tax_amount: Decimal
     discount_amount: Decimal
     total_amount: Decimal
+<<<<<<< HEAD
     created_by: str
     created_at: datetime
+=======
+    created_at: datetime
+>>>>>>> main
